@@ -6,3 +6,14 @@ AggregateResult[] groupedResults = [SELECT AVG(APEX_Amount_Paid__c)averageAmount
 System.debug(groupedResults);
 Object avgPaidAmount = groupedResults[0].get('averageAmount');
 System.debug('Total Average Amount Received From Customer ABC is '+avgPaidAmount);
+
+
+//Rathindra's Code
+AggregateResult[] groupedResult =[SELECT AVG(APEX_Amount_Paid__c) FROM APEX_Invoice__c where APEX_Customer__r.name = 'EASTMAN CHEMICAL'];
+Double[] avgArr = new Double[groupedResult.size()];
+for(Integer i=0; i<groupedResult.size();i++){
+    avgArr[i] = Double.valueOf(groupedResult[i].get('expr0'));
+}
+for(Double avg : avgArr){
+System.debug('Average amount paid by Chem company is '+ avg);
+}
