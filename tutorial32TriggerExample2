@@ -16,3 +16,34 @@ trigger CustomerAfterUpdateTrigger on APEX_Customer__c (after update) {
     //DML to insert the Invoice List in SFDC
     insert InvoiceList;
 }
+
+//Rathindra Code 
+trigger CustomerTriggerHandler on Customer (before insert, before update, before delete, after insert, 
+after update, after delete, after undelete) {
+    if(Trigger.isAfter){
+        if(Trigger.isInsert){
+            List<APEX_Invoice__c> invList = new List<APEX_Invoice__c>();
+            for(Customer cust : Trigger.new){
+                //if the current status is Active
+                if(cust.APEX_Customer_Status__c == 'Active'){
+                    APEX_Invoice__c objInvoice = new APEX_Invoice__c(APEX_Status__c = 'Pending', APEX_Customer__c = cust.id,
+                     APEX_Amount_Paid__c = 1000, Description__c ='Record created through insert trigger');
+                     invList.add(objInvoice);
+                }
+            }
+            Database.insert(invList, false);
+        }
+        else if(Trigger.isUpdate){
+            List<APEX_Invoice__c> invList = new List<APEX_Invoice__c>();
+            for(Customer cust : Trigger.new){
+                //if the current status is Active and Previous status is non-active
+                if(cust.APEX_Customer_Status__c == 'Active' && Trigger.oldMap.get(cust.id).APEX_Customer_Status__c == 'Inactive'){
+                    APEX_Invoice__c objInvoice = new APEX_Invoice__c(APEX_Status__c = 'Pending', APEX_Customer__c = cust.id,
+                     APEX_Amount_Paid__c = 1200, Description__c ='Record created through update trigger');
+                     invList.add(objInvoice);
+                }
+            }
+            Database.insert(invList, false);
+        }
+    }
+}
