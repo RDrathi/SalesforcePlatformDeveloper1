@@ -1,0 +1,19 @@
+List<List<SObject>> searchList= [FIND 'SFDC' in ALL FIELDS RETURNING Account(Name), Contact(FirstName,LastName)];
+List<Account> accList = new List<Account>();
+List<Contact> conList = new List<Contact>();
+for(List<SObject> objList : searchList){
+    for(SObject obj : objList){
+        if(obj.getSObjectType() == Account.getSObjectType()){
+            accList.add((Account)obj);
+        }
+        else{
+            conList.add((Contact)obj);
+        }
+    }
+}
+for(Account acc : accList){
+    System.debug('The name of the account is '+acc.name);
+}
+for(Contact con : conList){
+    System.debug('First Name of the contact is '+con.FirstName);
+}
