@@ -1,0 +1,19 @@
+
+Map<String, Schema.SObjectField> fieldMap = Schema.getGlobalDescribe()
+  .get('Account')
+  .getDescribe()
+  .fields.getMap();
+
+/* Accessing writable and accessible fields from map */
+for (Schema.SObjectField objectField : fieldMap.values()) {
+  Schema.DescribeFieldResult objectFieldResult = objectField.getDescribe();
+
+  if (objectFieldResult.isIdLookup()) {
+    System.debug(
+      'Field API Name -->' +
+      objectFieldResult.getName() +
+      ' \nLabel --->' +
+      objectFieldResult.getLabel()
+    );
+  }
+}
